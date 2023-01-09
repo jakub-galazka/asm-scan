@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from .file_explorer import makedir
 
 def config_fig(xlabel: str, ylabel: str, ylim: tuple[float] = None, style: str = "seaborn"):
     plt.style.use(style)
@@ -10,5 +11,5 @@ def config_fig(xlabel: str, ylabel: str, ylim: tuple[float] = None, style: str =
 def savefig(filepath: str, legend: bool = True):
     if legend:
         plt.legend()
-    plt.savefig(filepath)
+    plt.savefig(makedir(filepath))
     plt.clf()

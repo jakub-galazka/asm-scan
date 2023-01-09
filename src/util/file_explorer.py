@@ -1,8 +1,16 @@
 import os
 
+# Data dirs
+NEG_DATA_DIR = os.path.join("data", "negative")
+POS_DATA_DIR = os.path.join("data", "positive")
+
+# Save dirs
 MODELS_DIR = "models"
+CONFIG_FILENAME = "config.json"
 DATA_HIST_DIR = os.path.join("data", "history")
-PLOTS_HIST_DIR = os.path.join("plots", "history")
+DATA_PRED_DIR = os.path.join("data", "predictions")
+
+SEP = "\t"
 
 def makedir(dirpath: str) -> str:
     if len(os.path.split(dirpath)) > 1:

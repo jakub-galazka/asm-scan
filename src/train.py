@@ -5,39 +5,33 @@ import random
 import numpy as np
 import tensorflow as tf
 from history import history
-from utils.json import to_json
-from utils.data_loader import load_data
-from utils.tokenizer import load_tokenizer
-from utils.preprocessing import pad_protein_sequences
-from utils.file_explorer import MODELS_DIR, DATA_HIST_DIR, makedir
+from util.json import to_json
+from util.data_loader import load_data
+from util.tokenizer import load_tokenizer
+from util.preprocessing import pad_protein_sequences
+from util.file_explorer import NEG_DATA_DIR, POS_DATA_DIR, MODELS_DIR, DATA_HIST_DIR, CONFIG_FILENAME, makedir
 
 # Model params
-MODEL_NAME = "ASMscan"
-CV_ITERS = 6
+MODEL_NAME = "bass-model"
+CV_ITERS = 2
 D = 8
 M = 4
-EPOCHS = 40
+EPOCHS = 10
 
-def train() -> None:
+def train(model_dir: str, cv_iters: int) -> None:
     tokenizer = load_tokenizer()
     V = len(tokenizer.word_index) + 1
-
-    cv_iters = CV_ITERS
-    model_dir = os.path.join(MODELS_DIR, str(time.time()))
-    if test_mode():
-        cv_iters = 1
-        model_dir += "-test"
 
     model = None
     for cv_i in range(1, cv_iters + 1):
         # Load data
         x_trn, y_trn = load_data(
-            os.path.join("data", "negative", f"PB40_1z20_clu50_trn{cv_i}.fa"),
-            os.path.join("data", "positive", f"bass_ctm_motif_trn{cv_i}.fa")
+            os.path.join(NEG_DATA_DIR, "PB40", f"PB40_1z20_clu50_trn{cv_i}.fa"),
+            os.path.join(POS_DATA_DIR, "bass_motif", f"bass_ctm_motif_trn{cv_i}.fa")
         )
         x_val, y_val = load_data(
-            os.path.join("data", "negative", f"PB40_1z20_clu50_val{cv_i}.fa"),
-            os.path.join("data", "positive", f"bass_ctm_motif_val{cv_i}.fa")
+            os.path.join(NEG_DATA_DIR, "PB40", f"PB40_1z20_clu50_val{cv_i}.fa"),
+            os.path.join(POS_DATA_DIR, "bass_motif", f"bass_ctm_motif_val{cv_i}.fa")
         )
 
         # Pad protein sequences
@@ -86,7 +80,7 @@ def train() -> None:
     with open(os.path.join(model_dir, "architecture.txt"), "w") as f:
         model.summary(print_fn=lambda line: f.write(line + "\n"))
 
-    to_json(os.path.join(model_dir, "config.json"), {"T": T})
+    to_json(os.path.join(model_dir, CONFIG_FILENAME), {"model_name": MODEL_NAME, "T": T})
 
 def test_mode() -> bool:
     if ("--test" in sys.argv) or ("-t" in sys.argv):
@@ -99,4 +93,12 @@ def test_mode() -> bool:
     return False
 
 if __name__ == "__main__":
-    train()
+    model_dir = os.path.join(MODELS_DIR, str(time.time()))
+
+    cv_iters = CV_ITERS
+    if test_mode():
+        cv_iters = 1
+        model_dir += "-test"
+
+    train(model_dir, cv_iters)
+    history(model_dir)

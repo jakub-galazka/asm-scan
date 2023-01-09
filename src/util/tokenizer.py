@@ -2,8 +2,9 @@ import os
 import pickle
 import tensorflow as tf
 from .data_loader import load_data
+from .file_explorer import NEG_DATA_DIR, POS_DATA_DIR
 
-TOKENIZER_PATH = os.path.join("src", "utils", "tokenizer.pickle")
+TOKENIZER_PATH = os.path.join("src", "util", "tokenizer.pickle")
 
 def load_tokenizer() -> tf.keras.preprocessing.text.Tokenizer:
     if not os.path.isfile(TOKENIZER_PATH):
@@ -13,8 +14,8 @@ def load_tokenizer() -> tf.keras.preprocessing.text.Tokenizer:
 
 def create_tokenizer() -> None:
     seqs, _ = load_data(
-        os.path.join("data", "negative", "PB40_1z20_clu50_trn123456.fa"),
-        os.path.join("data", "positive", "bass_ctm_motif_trn123456.fa")
+        os.path.join(NEG_DATA_DIR, "PB40", "PB40_1z20_clu50_trn123456.fa"),
+        os.path.join(POS_DATA_DIR, "bass_motif", "bass_ctm_motif_trn123456.fa")
     )
 
     tokenizer = tf.keras.preprocessing.text.Tokenizer(char_level=True)
