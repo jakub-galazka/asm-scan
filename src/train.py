@@ -13,10 +13,10 @@ from util.file_explorer import NEG_DATA_DIR, POS_DATA_DIR, MODELS_DIR, DATA_HIST
 
 # Model params
 MODEL_NAME = "bass-model"
-CV_ITERS = 2
+CV_ITERS = 6
 D = 8
-M = 4
-EPOCHS = 10
+M = 10
+EPOCHS = 40
 
 def train(model_dir: str, cv_iters: int) -> None:
     tokenizer = load_tokenizer()

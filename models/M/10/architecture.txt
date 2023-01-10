@@ -1,0 +1,19 @@
+Model: "bass-model"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input (InputLayer)          [(None, 40)]              0         
+                                                                 
+ embedding (Embedding)       (None, 40, 8)             208       
+                                                                 
+ bi-lstm (Bidirectional)     (None, 40, 20)            1520      
+                                                                 
+ lstm (LSTM)                 (None, 5)                 520       
+                                                                 
+ classif (Dense)             (None, 1)                 6         
+                                                                 
+=================================================================
+Total params: 2,254
+Trainable params: 2,254
+Non-trainable params: 0
+_________________________________________________________________
